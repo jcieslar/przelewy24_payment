@@ -1,0 +1,45 @@
+= form_tag Przelewy24Payment.post_url, :method => "post" do
+  = hidden_field_tag 'p24_session_id', @data[:session_id]
+  = hidden_field_tag 'p24_id_sprzedawcy', @data.has_key?(:seller_id) ? @data[:seller_id] : Przelewy24Payment.seller_id
+  = hidden_field_tag 'p24_kwota', Przelewy24Payment.p24_price(@data[:value])
+  = hidden_field_tag 'p24_klient', @data[:client_name]
+  = hidden_field_tag 'p24_adres', @data[:address]
+  = hidden_field_tag 'p24_kod', @data[:zipcode]
+  = hidden_field_tag 'p24_miasto', @data[:city]
+  = hidden_field_tag 'p24_kraj', @data[:country]
+  = hidden_field_tag 'p24_email', @data[:email]
+  = hidden_field_tag 'p24_return_url_ok', @data.has_key?(:comeback_url) ? @data[:comeback_url] : Przelewy24Payment.comeback_url
+  = hidden_field_tag 'p24_return_url_error', @data.has_key?(:error_url) ? @data[:error_url] : Przelewy24Payment.error_url
+  = hidden_field_tag 'p24_opis', @data[:description]
+  = hidden_field_tag 'p24_language', @data.has_key?(:language) ? @data[:language] : Przelewy24Payment.language
+  = hidden_field_tag 'p24_crc', @data[:crc]
+  = button_tag( t("activerecord.models.p24_payment.buy"))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
