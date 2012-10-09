@@ -83,10 +83,12 @@ class YourPaymentController < Przelewy24Payment::PaymentController
     # payment = Payment.find_by_session_id(response_params[:p24_session_id])
 
     # you must return hash with amount which was save in your db and optional if you use your crc_key
-    #return data = { :amount => payment.value }
+    return data = { :amount => payment.value }
+
+    #or
 
     # optional variant:
-    # return data = { :amount => your_payment_value, :crc_key => your_crc+key }
+    return data = { :amount => your_payment_value, :crc_key => your_crc_key }
   end
 ```
 
