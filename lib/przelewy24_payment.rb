@@ -1,11 +1,8 @@
 require "przelewy24_payment/version"
 require "przelewy24_payment/engine"
+require "przelewy24_payment/przelewy24_payment_controller"
 
 module Przelewy24Payment
-
-  module Controllers
-    autoload :Przelewy24Payment, 'controllers/przelewy24_payment'
-  end
 
   mattr_accessor :seller_id
   @@seller_id = '17329'
