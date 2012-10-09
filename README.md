@@ -27,8 +27,8 @@ Przelewy24Payment.setup do |config|
   config.seller_id = 'your_seller_id'
   config.language = 'pl'
   config.mode = :development
-  config.error_url = 'http://localhost:3000/owner_advert/comeback'
-  config.comeback_url = 'http://localhost:3000/owner_advert/comeback'
+  config.error_url = 'http://localhost:3000/your_payment/comeback'
+  config.comeback_url = 'http://localhost:3000/your_payment/comeback'
 end
 ```
 
@@ -37,7 +37,7 @@ end
 Your controller e.g 'PaymentController' should inherit:
 
 ```ruby
-class PaymentController < Przelewy24Payment::PaymentController
+class YourPaymentController < Przelewy24Payment::PaymentController
   layout 'application'
   ...
 ```
