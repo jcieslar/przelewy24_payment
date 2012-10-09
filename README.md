@@ -50,6 +50,7 @@ class YourPaymentController < ApplicationController
   ...
 
   # after success payemnt this method will be trigger
+  # so you can do whatever you want
   def payment_success(payment_params)
     # payment_params returns hash with:
     # p24_session_id
@@ -63,7 +64,8 @@ class YourPaymentController < ApplicationController
     # payment = Payment.find_by_session_id(payment_params[:p24_session_id])
   end
 
-  # after error payemnt this method will be trigger
+  # after error payment this method will be trigger
+  # so you can do whatever you want
   def payment_error(payment_params, code, description)
     # payment_params returns hash with:
     # p24_session_id
@@ -77,6 +79,8 @@ class YourPaymentController < ApplicationController
     # description return error description
   end
 
+  # method to setup params to verify it final verifyciation
+  # so you can do whatever you want
   def payment_verify(response_params)
     # e.g:
     # payment = Payment.find_by_session_id(response_params[:p24_session_id])
