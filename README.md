@@ -26,7 +26,7 @@ And you can there "config/initializers/przelewy24_payment.rb" setup your setting
 Przelewy24Payment.setup do |config|
   config.seller_id = 'your_seller_id'
   config.language = 'pl'
-  config.mode = :development
+  config.mode = Rails.env.to_sym  # or just put :development or :production symbol
   config.error_url = 'http://localhost:3000/your_payment/comeback'
   config.comeback_url = 'http://localhost:3000/your_payment/comeback'
 end
@@ -112,13 +112,13 @@ class YourPaymentController < ApplicationController
     session_id = Przelewy24Payment.friendly_token[0,20]
     value = give_your_amount
     @data = { :session_id =>  session_id,
-              :description => "opis",
+              :description => "opis",           # optional param
               :value => value,
-              :client => 'Adam Nowak',
-              :address => 'Powstancow 22/2',
-              :zipcode => '53-456',
-              :city => 'Wroclaw',
-              :country => 'Polska',
+              :client => 'Adam Nowak',          # optional param
+              :address => 'Powstancow 22/2',    # optional param
+              :zipcode => '53-456',             # optional param
+              :city => 'Wroclaw',               # optional param
+              :country => 'Polska',             # optional param
               :email => 'payment@example.com',
               # adding this params, you overwrite your config settings so this param is optional
               # :language => 'pl',
