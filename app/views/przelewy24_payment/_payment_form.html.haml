@@ -8,8 +8,8 @@
   = hidden_field_tag 'p24_miasto', @data[:city]
   = hidden_field_tag 'p24_kraj', @data[:country]
   = hidden_field_tag 'p24_email', @data[:email]
-  = hidden_field_tag 'p24_return_url_ok', @data.has_key?(:comeback_url) ? @data[:comeback_url] : Przelewy24Payment.comeback_url
-  = hidden_field_tag 'p24_return_url_error', @data.has_key?(:error_url) ? @data[:error_url] : Przelewy24Payment.error_url
+  = hidden_field_tag 'p24_return_url_ok', @data.has_key?(:comeback_url) ? @data[:comeback_url] : Przelewy24Payment.get_comeback_url
+  = hidden_field_tag 'p24_return_url_error', @data.has_key?(:error_url) ? @data[:error_url] : Przelewy24Payment.get_error_url
   = hidden_field_tag 'p24_opis', @data[:description]
   = hidden_field_tag 'p24_language', @data.has_key?(:language) ? @data[:language] : Przelewy24Payment.language
   = hidden_field_tag 'p24_crc', @data[:crc]

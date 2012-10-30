@@ -27,8 +27,13 @@ Przelewy24Payment.setup do |config|
   config.seller_id = 'your_seller_id'
   config.language = 'pl'
   config.mode = Rails.env.to_sym  # or just put :development or :production symbol
-  config.error_url = 'http://localhost:3000/your_payment/comeback'
-  config.comeback_url = 'http://localhost:3000/your_payment/comeback'
+  config.error_url = '/your_controller/comeback'
+  config.comeback_url = '/your_controller/comeback'
+  config.hostname = {
+      :development => "http://localhost:3000",
+      :production => "your.domain",
+      :staging => "staging.domain"
+  }
 end
 ```
 

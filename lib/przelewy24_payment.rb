@@ -5,7 +5,7 @@ require "przelewy24_payment/przelewy24_payment_controller"
 module Przelewy24Payment
 
   mattr_accessor :seller_id
-  @@seller_id = '17329'
+  @@seller_id = ''
 
   mattr_accessor :language
   @@language = 'pl'
@@ -21,6 +21,9 @@ module Przelewy24Payment
 
   mattr_accessor :crc_key
   @@crc_key = ''
+
+  mattr_accessor :hostname
+  @@hostname = { :development => "http://localhost:3000" }
 
   def self.setup
     yield self
@@ -57,6 +60,18 @@ module Przelewy24Payment
   def self.calculate_crc(value,session_id, crc_key=nil)
     calc_md5 = Digest::MD5.hexdigest(session_id.to_s + "|" + (seller_id).to_s + "|" + (p24_price(value)).to_s + "|" + (crc_key.nil? ? "" : crc_key.to_s))
     return calc_md5
+  end
+
+  def self.get_hostname
+    @@hostname[@@mode]
+  end
+
+  def self.get_comeback_url
+    get_hostname + @@comeback_url
+  end
+
+  def self.get_error_url
+    get_hostname + @@error_url
   end
 
 end
