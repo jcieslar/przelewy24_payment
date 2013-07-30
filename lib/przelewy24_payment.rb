@@ -42,10 +42,10 @@ module Przelewy24Payment
   end
 
   def self.transaction_url
-    if @@mode == :development
-      'https://sandbox.przelewy24.pl/transakcja.php'
-    elsif @mode == :production
+    if @@mode == :production
       'https://secure.przelewy24.pl/index.php'
+    else
+      'https://sandbox.przelewy24.pl/transakcja.php'
     end
   end
 
