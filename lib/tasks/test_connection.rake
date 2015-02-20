@@ -12,7 +12,7 @@ namespace :przelewy24_payment do
     con.use_ssl = true
     con.verify_mode = OpenSSL::SSL::VERIFY_NONE
     response = con.start {|http| http.request(req)}
-    puts response.body
+    puts Przelewy24Payment.parse_response response.body
   end
 
 end
