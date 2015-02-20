@@ -19,16 +19,15 @@ module Przelewy24PaymentController
     end
 
     def payment_verify(response_params)
-      return data = { :amount => 100.0, :crc_key => '' }
+      return data = { :amount => 100.0, :crc_key => Przelewy24Payment.crc_key }
     end
 
     def comeback
-      @response = przelewy24_verify(params,request.remote_ip)
-      result = @response.split("\r\n")
-      if result[1] == "TRUE"
+      result = przelewy24_verify(params,request.remote_ip)
+      if result.error == "0"
         payment_success(params)
       else
-        payment_error(params, :error_code => result[2], :error_descr => result[3])
+        payment_error(params, result.error, result.errorMessage)
       end
     end
 
@@ -46,12 +45,11 @@ module Przelewy24PaymentController
         :p24_merchant_id => params[:p24_merchant_id],
         :p24_pos_id => params[:p24_pos_id],
         :p24_session_id => params[:p24_session_id],
-        :p24_amount => params[:p24_amount],
-        :p24_order_id => params[:p24_order_id],
-        :p24_method => params[:p24_method],
-        :p24_statement=> params[:p24_statement],
-        :p24_sign => Digest::MD5.hexdigest(params[:p24_session_id]+"|"+params[:p24_order_id]+"|"+params[:p24_amount]+"|"+params[:p24_currency]+"|"+Przelewy24Payment.crc_key)
+        :p24_amount => Przelewy24Payment.make_p24_amount(data[:amount]),
+        :p24_currency => params[:p24_currency],
+        :p24_order_id => params[:p24_order_id]
       }
+      params_new[:p24_sign] = Przelewy24Payment.verify_sign(data,params_new)
 
       url = URI.parse(Przelewy24Payment.verification_request_url)
       req = Net::HTTP::Post.new(url.path,{"User-Agent" => "Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.2.10) Gecko/20100915 Ubuntu/10.04 (lucid) Firefox/3.6.10"})
@@ -60,7 +58,7 @@ module Przelewy24PaymentController
       con.use_ssl = true
       con.verify_mode = OpenSSL::SSL::VERIFY_NONE
       response = con.start {|http| http.request(req)}
-      return response.body
+      return  Przelewy24Payment.parse_response response.body
     end
 
   end # InstanceMethods

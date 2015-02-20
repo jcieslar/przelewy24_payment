@@ -105,15 +105,13 @@ class YourPaymentController < ApplicationController
   # so you can do whatever you want
   def payment_verify(response_params)
     # e.g:
-    # payment = Payment.find_by_session_id(response_params[:p24_session_id])
-
-    # you must return hash with amount which was save in your db and optional if you use your crc_key
-    return data = { :amount => payment.value }
-
-    #or
-
-    # optional variant:
-    return data = { :amount => your_payment_value, :crc_key => your_crc_key }
+    # you must return hash with amount which was save in your db and your crc_key
+    payment = Payment::Payment.where(session_id: response_params['p24_session_id']).first
+    if payment
+      { amount: payment.amount, crc_key: Przelewy24Payment.crc_key }
+    else
+      {}
+    end
   end
 ```
 
@@ -141,6 +139,7 @@ class YourPaymentController < ApplicationController
               # :merchant_id => merchant_id
               # :pos_id => pos_id
               # :api_version => api_version,
+              # :crc_key => crc_key,
               # :currency => currency,
               # :country => country,
               # :url_return => url_return,
