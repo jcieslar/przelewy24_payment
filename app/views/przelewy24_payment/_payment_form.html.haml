@@ -1,18 +1,30 @@
-= form_tag Przelewy24Payment.post_url, :method => "post" do
+= form_tag Przelewy24Payment.transaction_request_url, :method => "post" do
+  = hidden_field_tag 'p24_merchant_id', data[:merchant_id]
+  = hidden_field_tag 'p24_pos_id',  data[:pos_id]
   = hidden_field_tag 'p24_session_id', data[:session_id]
-  = hidden_field_tag 'p24_id_sprzedawcy', data.has_key?(:seller_id) ? data[:seller_id] : Przelewy24Payment.seller_id
-  = hidden_field_tag 'p24_kwota', Przelewy24Payment.p24_price(data[:value])
-  = hidden_field_tag 'p24_klient', data[:client_name]
-  = hidden_field_tag 'p24_adres', data[:address]
-  = hidden_field_tag 'p24_kod', data[:zipcode]
-  = hidden_field_tag 'p24_miasto', data[:city]
-  = hidden_field_tag 'p24_kraj', data[:country]
+  = hidden_field_tag 'p24_amount', data[:p24_amount]
+  = hidden_field_tag 'p24_currency', data[:currency]
+  = hidden_field_tag 'p24_description', data[:description]
   = hidden_field_tag 'p24_email', data[:email]
-  = hidden_field_tag 'p24_return_url_ok', data.has_key?(:comeback_url) ? data[:comeback_url] : Przelewy24Payment.get_comeback_url
-  = hidden_field_tag 'p24_return_url_error', data.has_key?(:error_url) ? data[:error_url] : Przelewy24Payment.get_error_url
-  = hidden_field_tag 'p24_opis', data[:description]
-  = hidden_field_tag 'p24_language', data.has_key?(:language) ? data[:language] : Przelewy24Payment.language
-  = hidden_field_tag 'p24_crc', data[:crc]
+  = hidden_field_tag 'p24_client', data[:client]
+  = hidden_field_tag 'p24_address', data[:address]
+  = hidden_field_tag 'p24_zip', data[:zip]
+  = hidden_field_tag 'p24_city', data[:city]
+  = hidden_field_tag 'p24_country', data[:country]
+  = hidden_field_tag 'p24_phone', data[:phone]
+  = hidden_field_tag 'p24_language',data[:language]
+  = hidden_field_tag 'p24_method', data[:method]
+  = hidden_field_tag 'p24_url_return', data[:url_return]
+  = hidden_field_tag 'p24_url_status', data[:url_status]
+  = hidden_field_tag 'p24_time_limit', data[:time_limit]
+  = hidden_field_tag 'p24_wait_for_result', data[:wait_for_result]
+  = hidden_field_tag 'p24_channel', data[:channel]
+  = hidden_field_tag 'p24_shipping', data[:shipping]
+  = hidden_field_tag 'p24_transfer_label', data[:transfer_label]
+  = hidden_field_tag 'p24_sign',  data[:p24_sign]
+  = hidden_field_tag 'p24_encoding', data[:encoding]
+  = hidden_field_tag 'p24_api_version', data[:api_version]
+
   = button_tag( t("activerecord.models.p24_payment.buy"))
 
 

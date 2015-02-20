@@ -1,11 +1,15 @@
 Przelewy24Payment.setup do |config|
-  config.seller_id = 'your_seller_id'
+  config.merchant_id = 'your_merchant_id'
+  config.pos_id = 'your_shop_id_default_merchant_id'
+  config.crc_key = 'crc_key'
   config.language = 'pl'
+  config.currency = 'PLN'
+  config.country = 'PL'
   config.mode = :development
-  config.error_url = '/your_controller/comeback'
-  config.comeback_url = '/your_controller/comeback'
+  config.url_status = '/your_controller/comeback'
+  config.url_return = '/your_controller/comeback'
   config.hostname = {
-      :development => "http://localhost:3000",
+      :development => "http://127.0.0.1:3000",
       :production => "your.domain",
       :staging => "staging.domain"
   }
