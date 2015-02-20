@@ -2,6 +2,8 @@
 
 It's rails gem to integrate polish payment method: przelewy24.pl
 
+Gem version 0.2.0 on [rubygems](https://rubygems.org/gems/przelewy24_payment) support API version 3.2
+
 ## Installation
 
 Add this line to your application's Gemfile:
