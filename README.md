@@ -24,17 +24,22 @@ And you can there "config/initializers/przelewy24_payment.rb" setup your setting
 
 ```ruby
 Przelewy24Payment.setup do |config|
-  config.seller_id = 'your_seller_id'
+  config.merchant_id = 'your_merchant_id'
+  config.pos_id = 'your_shop_id_default_merchant_id'
+  config.crc_key = 'crc_key'
   config.language = 'pl'
-  config.mode = Rails.env.to_sym  # or just put :development or :production symbol
-  config.error_url = '/your_controller/comeback'
-  config.comeback_url = '/your_controller/comeback'
+  config.currency = 'PLN'
+  config.country = 'PL'
+  config.mode = :development
+  config.url_status = '/your_controller/comeback'
+  config.url_return = '/your_controller/comeback'
   config.hostname = {
-      :development => "http://localhost:3000",
+      :development => "http://127.0.0.1:3000",
       :production => "your.domain",
       :staging => "staging.domain"
   }
 end
+
 ```
 
 ## Usage
@@ -58,12 +63,16 @@ class YourPaymentController < ApplicationController
   # so you can do whatever you want
   def payment_success(payment_params)
     # payment_params returns hash with:
+    # p24_merchant_id
+    # p24_pos_id
     # p24_session_id
     # p24_order_id
-    # p24_kwota
+    # p24_amount
+    # p24_currency
+    # p24_method
+    # p24_sign
     # p24_karta
-    # p24_order_id_full
-    # p24_crc
+    # payment_id
 
     # e.g
     # payment = Payment.find_by_session_id(payment_params[:p24_session_id])
@@ -73,12 +82,16 @@ class YourPaymentController < ApplicationController
   # so you can do whatever you want
   def payment_error(payment_params, code, description)
     # payment_params returns hash with:
+    # p24_merchant_id
+    # p24_pos_id
     # p24_session_id
     # p24_order_id
-    # p24_kwota
-    # p24_error_code
-    # p24_order_id_full
-    # p24_crc
+    # p24_amount
+    # p24_currency
+    # p24_method
+    # p24_sign
+    # p24_karta
+    # payment_id
     #
     # code return error code
     # description return error description
@@ -114,21 +127,36 @@ class YourPaymentController < ApplicationController
   ...
 
   def your_payment
-    session_id = Przelewy24Payment.friendly_token[0,20]
-    value = give_your_amount
+    session_id = Przelewy24Payment.friendly_token[0,20] # assign this to payment
     @data = { :session_id =>  session_id,
-              :description => "opis",           # optional param
-              :value => value,
-              :client => 'Adam Nowak',          # optional param
-              :address => 'Powstancow 22/2',    # optional param
-              :zipcode => '53-456',             # optional param
-              :city => 'Wroclaw',               # optional param
-              :country => 'Polska',             # optional param
+              :description => "opis",
+              :amount => 1.23,
               :email => 'payment@example.com',
+              :country => 'PL',
               # adding this params, you overwrite your config settings so this param is optional
-              # :language => 'pl',
-              # :crc => your_crc_key,
-              # :seller_id => seller_id
+              # :merchant_id => merchant_id
+              # :pos_id => pos_id
+              # :api_version => api_version,
+              # :currency => currency,
+              # :country => country,
+              # :url_return => url_return,
+              # :url_status => url_status,
+
+              # other optional params
+              # :language => pl/en/de/es/it
+              # :method => method,
+              # :client => 'Adam Nowak',
+              # :address => 'Powstancow 22/2',
+              # :zipcode => '53-456',
+              # :city => 'Wroclaw',
+              # :phone => '481321132123',
+              # :time_limit => INT,
+              # :wait_for_result => INT,
+              # :channel => INT,
+              # :shipping => INT,
+              # :transfer_label => STRING(20)
+              # :encoding => ISO-8859-2/UTF-8/Windows-1250
+
             }
   end
 

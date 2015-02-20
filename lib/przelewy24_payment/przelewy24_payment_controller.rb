@@ -23,7 +23,7 @@ module Przelewy24PaymentController
     end
 
     def comeback
-      @response = przelewy24_verify(params)
+      @response = przelewy24_verify(params,request.remote_ip)
       result = @response.split("\r\n")
       if result[1] == "TRUE"
         payment_success(params)
@@ -34,19 +34,26 @@ module Przelewy24PaymentController
 
     private
 
-    def przelewy24_verify(params)
+    def przelewy24_verify(params,ip)
+      return '' unless Przelewy24Payment.check_ip(ip)
       require 'net/https'
       require 'net/http'
       require 'open-uri'
       require 'openssl'
 
       data = payment_verify(params)
-      params_new = {:p24_session_id => params[:p24_session_id], :p24_order_id => params[:p24_order_id], :p24_id_sprzedawcy => Przelewy24Payment.seller_id, :p24_kwota => Przelewy24Payment.p24_price(data[:amount]).to_s}
-      if data[:crc_key].present?
-        params_new[:p24_crc] = Digest::MD5.hexdigest(params[:p24_session_id]+"|"+params[:p24_order_id]+"|"+params[:p24_kwota]+"|"+data[:crc_key])
-      end
+      params_new = {
+        :p24_merchant_id => params[:p24_merchant_id],
+        :p24_pos_id => params[:p24_pos_id],
+        :p24_session_id => params[:p24_session_id],
+        :p24_amount => params[:p24_amount],
+        :p24_order_id => params[:p24_order_id],
+        :p24_method => params[:p24_method],
+        :p24_statement=> params[:p24_statement],
+        :p24_sign => Digest::MD5.hexdigest(params[:p24_session_id]+"|"+params[:p24_order_id]+"|"+params[:p24_amount]+"|"+params[:p24_currency]+"|"+Przelewy24Payment.crc_key)
+      }
 
-      url = URI.parse(Przelewy24Payment.transaction_url)
+      url = URI.parse(Przelewy24Payment.verification_request_url)
       req = Net::HTTP::Post.new(url.path,{"User-Agent" => "Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.2.10) Gecko/20100915 Ubuntu/10.04 (lucid) Firefox/3.6.10"})
       req.form_data = params_new
       con = Net::HTTP.new(url.host, 443)
