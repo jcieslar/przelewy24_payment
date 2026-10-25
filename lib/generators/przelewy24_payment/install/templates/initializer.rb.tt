@@ -1,0 +1,47 @@
+# frozen_string_literal: true
+
+Przelewy24Payment.configure do |config|
+  # :sandbox or :production
+  config.environment = Rails.env.production? ? :production : :sandbox
+
+  # Credentials: Rails credentials first, ENV as a fallback.
+  #   bin/rails credentials:edit
+  #   przelewy24:
+  #     merchant_id: 12345
+  #     pos_id: 12345        # optional, defaults to merchant_id
+  #     api_key: "..."       # REST API key from the Przelewy24 panel
+  #     crc_key: "..."       # CRC key of the shop
+  credentials = Rails.application.credentials.przelewy24 || {}
+  config.merchant_id = credentials[:merchant_id] || ENV["PRZELEWY24_MERCHANT_ID"]
+  config.pos_id      = credentials[:pos_id]      || ENV["PRZELEWY24_POS_ID"]
+  config.api_key     = credentials[:api_key]     || ENV["PRZELEWY24_API_KEY"]
+  config.crc_key     = credentials[:crc_key]     || ENV["PRZELEWY24_CRC_KEY"]
+
+  config.default_country  = "PL"
+  config.default_language = "pl"
+
+  # Public host used to build the status webhook URL sent to Przelewy24.
+  # In development point it at a tunnel (ngrok, cloudflared).
+  config.url_options = {
+    host: ENV.fetch("APP_HOST", "localhost:3000"),
+    protocol: ENV.fetch("APP_PROTOCOL", Rails.env.production? ? "https" : "http")
+  }
+
+  # Optional: only accept webhooks from Przelewy24 servers (IPs and CIDR ranges
+  # published in the Przelewy24 REST docs, section "Adresy IP serwerów").
+  # config.allowed_ips = %w[5.252.202.254 5.252.202.255 20.215.81.124 20.215.183.48/28
+  #                         193.178.213.0/24 91.220.177.0/24 134.112.88.8/29]
+
+  # Controller the webhook endpoints inherit from. Keep it free of
+  # authentication filters; Przelewy24 calls it without a session.
+  # config.parent_controller = "ApplicationController"
+
+  # Subscriptions: failed charges before cancel, and the wait between retries.
+  # config.max_failed_attempts = 3
+  # config.retry_interval = 1.day
+
+  # Called once per payment, after Przelewy24 confirmed the transaction.
+  config.on_payment_verified = ->(payment) { payment.payable.try(:payment_verified!) }
+  config.on_payment_failed   = ->(payment) { payment.payable.try(:payment_failed!) }
+  config.on_refund           = ->(refund) { }
+end

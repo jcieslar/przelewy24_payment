@@ -1,0 +1,14 @@
+class CreatePrzelewy24Refunds < ActiveRecord::Migration<%= migration_version %>
+  def change
+    create_table :przelewy24_refunds do |t|
+      t.references :payment, null: false, foreign_key: { to_table: :przelewy24_payments }
+      t.integer :amount, null: false
+      t.string :request_id, null: false
+      t.string :refunds_uuid, null: false
+      t.string :status, null: false, default: "pending"
+      t.timestamps
+    end
+
+    add_index :przelewy24_refunds, :refunds_uuid, unique: true
+  end
+end
