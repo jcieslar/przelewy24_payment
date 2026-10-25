@@ -1,2 +1,8 @@
+# frozen_string_literal: true
+
 require "bundler/gem_tasks"
-import "./lib/tasks/test_connection.rake"
+require "rspec/core/rake_task"
+
+RSpec::Core::RakeTask.new(:spec)
+
+task default: :spec

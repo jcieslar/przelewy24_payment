@@ -1,0 +1,14 @@
+
+Przelewy24Payment installed. Next steps:
+
+  1. Run `bin/rails db:migrate`.
+  2. Add credentials (`bin/rails credentials:edit`) or set the ENV variables:
+     PRZELEWY24_MERCHANT_ID, PRZELEWY24_POS_ID (optional), PRZELEWY24_API_KEY, PRZELEWY24_CRC_KEY.
+  3. Include Przelewy24Payment::Payable in your payable model (e.g. Order).
+  4. Start a payment:
+       payment = Przelewy24Payment::Payment.start!(payable: order, amount: order.price,
+         currency: "PLN", email: user.email, description: "Order #1", return_url: order_url(order))
+       redirect_to payment.redirect_url, allow_other_host: true
+  5. Status webhook URL (public, HTTPS in production):
+       POST {{mount_path}}/webhooks/status
+

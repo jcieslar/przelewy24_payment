@@ -1,0 +1,28 @@
+class CreatePrzelewy24Subscriptions < ActiveRecord::Migration<%= migration_version %>
+  def change
+    create_table :przelewy24_subscriptions do |t|
+      t.references :owner, polymorphic: true, null: false, index: true
+      t.string :payment_method, null: false
+      t.string :status, null: false, default: "pending"
+      t.string :frequency, null: false
+      t.integer :amount, null: false
+      t.string :currency, null: false
+      t.string :email, null: false
+      t.string :description
+      t.string :return_url, null: false
+      t.string :alias_value
+      t.string :alias_label
+      t.string :method_ref
+      t.json :recurring
+      t.json :psu
+      t.integer :failed_attempts, null: false, default: 0
+      t.datetime :next_charge_at
+      t.datetime :last_charged_at
+      t.datetime :canceled_at
+      t.string :cancel_reason
+      t.timestamps
+    end
+
+    add_index :przelewy24_subscriptions, %i[status next_charge_at]
+  end
+end

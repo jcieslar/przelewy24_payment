@@ -1,0 +1,21 @@
+class CreatePrzelewy24Payments < ActiveRecord::Migration<%= migration_version %>
+  def change
+    create_table :przelewy24_payments do |t|
+      t.references :payable, polymorphic: true, null: false, index: true
+      t.string :session_id, null: false
+      t.string :token
+      t.integer :amount, null: false
+      t.string :currency, null: false
+      t.string :status, null: false, default: "pending"
+      t.bigint :p24_order_id
+      t.integer :method_id
+      t.json :payload
+      t.datetime :verified_at
+      t.datetime :notified_at
+      t.timestamps
+    end
+
+    add_index :przelewy24_payments, :session_id, unique: true
+    add_index :przelewy24_payments, :p24_order_id
+  end
+end
